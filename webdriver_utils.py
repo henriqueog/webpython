@@ -21,9 +21,9 @@ def criarWebDriver(tipoDriver):
 
 def escolherWebDriver(driverString):
     opcoes = {
-       	'CHROME': createChromeDriver,
-       	'EDGE': createEdgeDriver,
-       	'FIREFOX':createFirefoxDriver,
+       	'CHROME': criarChromeDriver,
+       	'EDGE': criarEdgeDriver,
+       	'FIREFOX':criarFirefoxDriver,
     }
     return opcoes.get(driverString)()
 
