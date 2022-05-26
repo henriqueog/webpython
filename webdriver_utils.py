@@ -11,15 +11,15 @@ from time import sleep
 # hide = win32gui.GetForegroundWindow()
 # win32gui.ShowWindow(hide,win32con.SW_HIDE)
 
-def createWebDriver(driverType):
+def criarWebDriver(tipoDriver):
 	"""Evita de que, quando esteja analisando e fazendo o download do webdriver, se alguma verificação de segurança será considerada"""
 	os.environ['WDM_SSL_VERIFY']='0'
-	global options
+	global opcoes
 	global driver
-	driver = chooseWebDriver(driverType.upper())
+	driver = escolherWebDriver(tipoDriver.upper())
 	
 
-def chooseWebDriver(driverString):
+def escolherWebDriver(driverString):
     opcoes = {
        	'CHROME': createChromeDriver,
        	'EDGE': createEdgeDriver,
@@ -27,22 +27,22 @@ def chooseWebDriver(driverString):
     }
     return opcoes.get(driverString)()
 
-def createChromeDriver():
-	options = webdriver.ChromeOptions()
-	options.add_argument("start-maximized")
-	options.add_experimental_option('excludeSwitches', ['enable-logging'])
-	return webdriver.Chrome(ChromeDriverManager(path=os.getcwd()).install(),options=options)
+def criarChromeDriver():
+	opcoes = webdriver.ChromeOptions()
+	opcoes.add_argument("start-maximized")
+	opcoes.add_experimental_option('excludeSwitches', ['enable-logging'])
+	return webdriver.Chrome(ChromeDriverManager(path=os.getcwd()).install(),options=opcoes)
 
-def createFirefoxDriver():
+def criarFirefoxDriver():
 	return webdriver.Firefox(GeckoDriverManager(path=os.getcwd()).install())
 
-def createEdgeDriver():
-	options = Options()
-	options.add_argument("start-maximized")
-	return webdriver.Edge(EdgeChromiumDriverManager(path=os.getcwd()).install(),options=options)
+def criarEdgeDriver():
+	opcoes = Options()
+	opcoes.add_argument("start-maximized")
+	return webdriver.Edge(EdgeChromiumDriverManager(path=os.getcwd()).install(),options=opcoes)
 
 
-def waitPageLoad():
+def aguardarPagina():
     done_state = False
     while done_state == False:
         state = driver.execute_script('return window.document.readyState')
@@ -51,28 +51,28 @@ def waitPageLoad():
         else:
             done_state = True
 
-def centralizeElement(element):
+def centralizarElemento(element):
 	actions = ActionChains(driver)
 	actions.move_to_element(element).perform()
 
-def navigateTo(URL):
+def navegarPara(URL):
 	driver.get(URL)
 	waitPageLoad()
 
-def getElementByXPath(elementXPath):
-	return driver.find_element_by_xpath(elementXPath)
+def pegaElementopeloXPath(elementoXPath):
+	return driver.find_element_by_xpath(elementoXPath)
 
-def clickElementByXPath(elementXPath):
-	element = getElementByXPath(elementXPath)
+def clicaElementopeloXPath(elementoXPath):
+	elemento = getElementByXPath(elementoXPath)
 	actions = ActionChains(driver)
-	actions.click(element).perform()
+	actions.click(elemento).perform()
 	waitPageLoad()
 
-def getContentByAttribute(element,attributeType):
-	value=''
+def pegaConteudopeloAtributo(elemento,tipoAtributo):
+	valor=''
 	# consideraremos quando o parâmetro for vazio, para capturar o textContent como default
-	if len(attributeType.strip())==0:
-		value = element.get_attribute('textContent')
+	if len(tipoAtributo.strip())==0:
+		valor = elemento.get_attribute('textContent')
 	else:
-		value = element.get_attribute(attributeType)
-	return value
+		valor = elemento.get_attribute(tipoAtributo)
+	return valor
