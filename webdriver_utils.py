@@ -4,6 +4,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import os
 from time import sleep
 # import win32gui, win32con
@@ -42,7 +44,7 @@ def criarEdgeDriver():
 	return webdriver.Edge(EdgeChromiumDriverManager(path=os.getcwd()).install(),options=opcoes)
 
 
-def aguardarPagina():
+def verificarDOMCarregado():
     carregado = False
     while carregado == False:
         estadoAtual = driver.execute_script('return window.document.readyState')
@@ -57,7 +59,8 @@ def centralizarElemento(elemento):
 
 def navegarPara(URL):
 	driver.get(URL)
-	aguardarPagina()
+	verificarDOMCarregado()
+	print('carregou')
 
 def pegaElementopeloXPath(elementoXPath):
 	return driver.find_element_by_xpath(elementoXPath)
@@ -66,7 +69,7 @@ def clicaElementopeloXPath(elementoXPath):
 	elemento = getElementByXPath(elementoXPath)
 	acoes = ActionChains(driver)
 	acoes.click(elemento).perform()
-	aguardarPagina()
+	verificarDOMCarregado()
 
 def pegaConteudopeloAtributo(elemento,tipoAtributo):
 	valor=''
