@@ -43,30 +43,30 @@ def criarEdgeDriver():
 
 
 def aguardarPagina():
-    done_state = False
-    while done_state == False:
-        state = driver.execute_script('return window.document.readyState')
-        if state != 'complete':
+    carregado = False
+    while carregado == False:
+        estadoAtual = driver.execute_script('return window.document.readyState')
+        if estadoAtual != 'complete':
             sleep(1)
         else:
-            done_state = True
+            carregado = True
 
-def centralizarElemento(element):
-	actions = ActionChains(driver)
-	actions.move_to_element(element).perform()
+def centralizarElemento(elemento):
+	acoes = ActionChains(driver)
+	acoes.move_to_element(elemento).perform()
 
 def navegarPara(URL):
 	driver.get(URL)
-	waitPageLoad()
+	aguardarPagina()
 
 def pegaElementopeloXPath(elementoXPath):
 	return driver.find_element_by_xpath(elementoXPath)
 
 def clicaElementopeloXPath(elementoXPath):
 	elemento = getElementByXPath(elementoXPath)
-	actions = ActionChains(driver)
-	actions.click(elemento).perform()
-	waitPageLoad()
+	acoes = ActionChains(driver)
+	acoes.click(elemento).perform()
+	aguardarPagina()
 
 def pegaConteudopeloAtributo(elemento,tipoAtributo):
 	valor=''
