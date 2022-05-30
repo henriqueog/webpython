@@ -1,10 +1,10 @@
 """"""
 from selenium import webdriver
+from selenium.webdriver.support.relative_locator import RelativeBy
 from selenium.webdriver.edge.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -55,6 +55,10 @@ def aguardarPagina():
 	yield WebDriverWait(driver, 3).until(EC.staleness_of(driver.find_element(By.TAG_NAME,'html')))
 	WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState;") == "complete")
 
+def checaExistenciaElementopeloXPath(elementoXPath):
+	"""Verifica a existância de algum elemeno"""
+	return True if len(driver.find_elements(By.XPATH,elementoXPath))>0 else False
+
 def centralizarElemento(elemento):
 	"""Focaliza (centralizando, rolando a página para) no elemento passado como parâmetro"""
 	acoes.move_to_element(elemento).perform()
@@ -83,8 +87,24 @@ def moveparaElemento(elemento):
 	"""Focaliza e move o cursor do mouse para o elemento passado como parâmetro"""
 	acoes.move_to_element(elemento).perform()
 
-def preencheInputbyXPath(elemXPath,inputValue):
-	"""Preenche o campo de input passado como parâmetro, com o valor de 'inputValue', performando a escrita através de actions"""
+def preencheInputpeloXPath(elemXPath,valorInput):
+	"""Preenche o campo de input passado como parâmetro, com o valor de 'valorInput', performando a escrita através de actions"""
 	elemInput = pegaElementopeloXPath(elementoXPath)
 	centralizarElemento(elemInput)
-	acoes.click(elemInput).send_keys(inputValue.strip()).perform()
+	elemInput.send_keys(valorInput.strip())
+
+def capturaAlerta(confirmacao=True):
+	"""Intercepta alertas que aparecem na página, dando ok ou cancel e retornando o texto"""
+	alerta=''
+	mensagem=''
+	try:
+		WebDriverWait(driver, 10).until(EC.alert_is_present())
+		alerta = driver.switch_to_alert()
+		mensagem = srt(alerta.text).strip()
+		if confirmacao:
+			alerta.accept()
+		else:
+			alerta.dismiss()
+	except:
+		print("Nenhum alerta achado")	
+	return mensagem
